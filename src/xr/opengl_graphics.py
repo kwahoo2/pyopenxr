@@ -7,7 +7,7 @@ if platform.system() == "Windows":
     from OpenGL import WGL
     from .platform.windows import *
 elif platform.system() == "Linux":
-    from OpenGL import GLX
+    from OpenGL import EGL
     from .platform.linux import *
 from OpenGL import GL
 
@@ -47,6 +47,7 @@ class OpenGLGraphics(object):
         glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 4)
         glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 5)
         glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
+        glfw.window_hint(glfw.CONTEXT_CREATION_API, glfw.EGL_CONTEXT_API)
         self.window = glfw.create_window(*self.window_size, title, None, None)
         if self.window is None:
             raise XrException("Failed to create GLFW window")
@@ -60,14 +61,28 @@ class OpenGLGraphics(object):
             self.graphics_binding.h_dc = WGL.wglGetCurrentDC()
             self.graphics_binding.h_glrc = WGL.wglGetCurrentContext()
         elif platform.system() == "Linux":
-            drawable = GLX.glXGetCurrentDrawable()
-            context = GLX.glXGetCurrentContext()
-            display = GLX.glXGetCurrentDisplay()
-            self.graphics_binding = GraphicsBindingOpenGLXlibKHR(
-                x_display=display,
-                glx_drawable=drawable,
-                glx_context=context,
-            )
+            self.graphics_binding = GraphicsBindingEGLMNDX()
+            display = glfw.get_egl_display()
+            context = glfw.get_egl_context(self.window)
+            self.graphics_binding.display = display
+            self.graphics_binding.context = context
+            self.graphics_binding.get_proc_address = ctypes.cast(EGL.eglGetProcAddress.load(), PFN_xrEglGetProcAddressMNDX)
+            config = ctypes.c_void_p()
+            num_configs = EGL.EGLint()
+            config_attribs = [
+                EGL.EGL_RENDERABLE_TYPE, EGL.EGL_OPENGL_BIT,
+                EGL.EGL_SURFACE_TYPE, EGL.EGL_PBUFFER_BIT,
+                EGL.EGL_RED_SIZE, 8,
+                EGL.EGL_GREEN_SIZE, 8,
+                EGL.EGL_BLUE_SIZE, 8,
+                EGL.EGL_ALPHA_SIZE, 8,
+                EGL.EGL_NONE
+            ]
+            attribs_list = (EGL.EGLint * len(config_attribs))(*config_attribs)
+            # https://registry.khronos.org/EGL/sdk/docs/man/html/eglChooseConfig.xhtml
+            # a config according to the ``best'' match criteria, is returned (may exceed the requirements)
+            EGL.eglChooseConfig(display, attribs_list, ctypes.byref(config), 1, ctypes.byref(num_configs))
+            self.graphics_binding.config = config
         else:
             raise NotImplementedError
         self.swapchain_framebuffer = None

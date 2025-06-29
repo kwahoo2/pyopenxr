@@ -1,10 +1,10 @@
 # Warning: this file is auto-generated. Do not edit.
 
-from ctypes import CFUNCTYPE, POINTER, Structure, c_char_p, c_float, c_int, c_long, c_longlong, c_uint32, c_void_p
+from ctypes import CFUNCTYPE, POINTER, Structure, c_char_p, c_float, c_int, c_long, c_longlong, c_uint32, c_void_p, cast
 
 import ctypes
 from typing import Optional
-from OpenGL import GLX
+from OpenGL import EGL
 
 from ..array_field import *
 from ..enums import *
@@ -28,17 +28,20 @@ KHR_vulkan_swapchain_format_list = 1
 KHR_vulkan_swapchain_format_list_SPEC_VERSION = 5
 KHR_VULKAN_SWAPCHAIN_FORMAT_LIST_EXTENSION_NAME = "XR_KHR_vulkan_swapchain_format_list"
 KHR_opengl_enable = 1
-KHR_opengl_enable_SPEC_VERSION = 10
+KHR_opengl_enable_SPEC_VERSION = 11
 KHR_OPENGL_ENABLE_EXTENSION_NAME = "XR_KHR_opengl_enable"
 KHR_vulkan_enable = 1
-KHR_vulkan_enable_SPEC_VERSION = 8
+KHR_vulkan_enable_SPEC_VERSION = 9
 KHR_VULKAN_ENABLE_EXTENSION_NAME = "XR_KHR_vulkan_enable"
 KHR_convert_timespec_time = 1
 KHR_convert_timespec_time_SPEC_VERSION = 1
 KHR_CONVERT_TIMESPEC_TIME_EXTENSION_NAME = "XR_KHR_convert_timespec_time"
 KHR_vulkan_enable2 = 1
-KHR_vulkan_enable2_SPEC_VERSION = 2
+KHR_vulkan_enable2_SPEC_VERSION = 3
 KHR_VULKAN_ENABLE2_EXTENSION_NAME = "XR_KHR_vulkan_enable2"
+MNDX_egl_enable = 1
+MNDX_egl_enable_SPEC_VERSION = 2
+MNDX_EGL_ENABLE_EXTENSION_NAME = "XR_MNDX_egl_enable"
 FB_foveation_vulkan = 1
 FB_foveation_vulkan_SPEC_VERSION = 1
 FB_FOVEATION_VULKAN_EXTENSION_NAME = "XR_FB_foveation_vulkan"
@@ -91,85 +94,6 @@ class VulkanSwapchainFormatListCreateInfoKHR(Structure):
         ("next", c_void_p),
         ("view_format_count", c_uint32),
         ("_view_formats", POINTER(c_int)),
-    ]
-
-
-class GraphicsBindingOpenGLXlibKHR(Structure):
-    def __init__(
-        self,
-        x_display: POINTER(GLX.Display) = None,
-        visualid: int = 0,
-        glx_fbconfig: GLX.GLXFBConfig = None,
-        glx_drawable: GLX.GLXDrawable = 0,
-        glx_context: GLX.GLXContext = None,
-        next: c_void_p = None,
-        type: StructureType = StructureType.GRAPHICS_BINDING_OPENGL_XLIB_KHR,
-    ) -> None:
-        super().__init__(
-            x_display=x_display,
-            visualid=visualid,
-            glx_fbconfig=glx_fbconfig,
-            glx_drawable=glx_drawable,
-            glx_context=glx_context,
-            next=next,
-            type=type,
-        )
-
-    def __repr__(self) -> str:
-        return f"xr.GraphicsBindingOpenGLXlibKHR(x_display={repr(self.x_display)}, visualid={repr(self.visualid)}, glx_fbconfig={repr(self.glx_fbconfig)}, glx_drawable={repr(self.glx_drawable)}, glx_context={repr(self.glx_context)}, next={repr(self.next)}, type={repr(self.type)})"
-
-    def __str__(self) -> str:
-        return f"xr.GraphicsBindingOpenGLXlibKHR(x_display={self.x_display}, visualid={self.visualid}, glx_fbconfig={self.glx_fbconfig}, glx_drawable={self.glx_drawable}, glx_context={self.glx_context}, next={self.next}, type={self.type})"
-
-    _fields_ = [
-        ("type", StructureType.ctype()),
-        ("next", c_void_p),
-        ("x_display", POINTER(GLX.Display)),
-        ("visualid", c_uint32),
-        ("glx_fbconfig", GLX.GLXFBConfig),
-        ("glx_drawable", GLX.GLXDrawable),
-        ("glx_context", GLX.GLXContext),
-    ]
-
-
-class GraphicsBindingOpenGLXcbKHR(Structure):
-    def __init__(
-        self,
-        connection: POINTER(c_int) = None,
-        screen_number: int = 0,
-        fbconfigid: int = 0,
-        visualid: int = 0,
-        glx_drawable: int = 0,
-        glx_context: int = 0,
-        next: c_void_p = None,
-        type: StructureType = StructureType.GRAPHICS_BINDING_OPENGL_XCB_KHR,
-    ) -> None:
-        super().__init__(
-            connection=connection,
-            screen_number=screen_number,
-            fbconfigid=fbconfigid,
-            visualid=visualid,
-            glx_drawable=glx_drawable,
-            glx_context=glx_context,
-            next=next,
-            type=type,
-        )
-
-    def __repr__(self) -> str:
-        return f"xr.GraphicsBindingOpenGLXcbKHR(connection={repr(self.connection)}, screen_number={repr(self.screen_number)}, fbconfigid={repr(self.fbconfigid)}, visualid={repr(self.visualid)}, glx_drawable={repr(self.glx_drawable)}, glx_context={repr(self.glx_context)}, next={repr(self.next)}, type={repr(self.type)})"
-
-    def __str__(self) -> str:
-        return f"xr.GraphicsBindingOpenGLXcbKHR(connection={self.connection}, screen_number={self.screen_number}, fbconfigid={self.fbconfigid}, visualid={self.visualid}, glx_drawable={self.glx_drawable}, glx_context={self.glx_context}, next={self.next}, type={self.type})"
-
-    _fields_ = [
-        ("type", StructureType.ctype()),
-        ("next", c_void_p),
-        ("connection", POINTER(c_int)),
-        ("screen_number", c_uint32),
-        ("fbconfigid", c_int),
-        ("visualid", c_int),
-        ("glx_drawable", c_int),
-        ("glx_context", c_int),
     ]
 
 
@@ -410,7 +334,17 @@ PFN_xrGetVulkanGraphicsDeviceKHR = CFUNCTYPE(Result.ctype(), Instance, SystemId,
 
 PFN_xrGetVulkanGraphicsRequirementsKHR = CFUNCTYPE(Result.ctype(), Instance, SystemId, POINTER(GraphicsRequirementsVulkanKHR))
 
+
+class timespec(Structure):
+    pass
+
+
 PFN_xrConvertTimespecTimeToTimeKHR = CFUNCTYPE(Result.ctype(), Instance, POINTER(timespec), POINTER(Time))
+
+
+class timespec(Structure):
+    pass
+
 
 PFN_xrConvertTimeToTimespecTimeKHR = CFUNCTYPE(Result.ctype(), Instance, Time, POINTER(timespec))
 
@@ -548,6 +482,43 @@ PFN_xrGetVulkanGraphicsDevice2KHR = CFUNCTYPE(Result.ctype(), Instance, POINTER(
 
 PFN_xrGetVulkanGraphicsRequirements2KHR = CFUNCTYPE(Result.ctype(), Instance, SystemId, POINTER(GraphicsRequirementsVulkanKHR))
 
+PFN_xrEglGetProcAddressMNDX = CFUNCTYPE(PFN_xrVoidFunction, c_char_p)
+
+
+class GraphicsBindingEGLMNDX(Structure):
+    def __init__(
+        self,
+        get_proc_address: PFN_xrEglGetProcAddressMNDX = cast(None, PFN_xrEglGetProcAddressMNDX),
+        display: c_void_p = None,
+        config: c_void_p = None,
+        context: c_void_p = None,
+        next: c_void_p = None,
+        type: StructureType = StructureType.GRAPHICS_BINDING_EGL_MNDX,
+    ) -> None:
+        super().__init__(
+            get_proc_address=get_proc_address,
+            display=display,
+            config=config,
+            context=context,
+            next=next,
+            type=type,
+        )
+
+    def __repr__(self) -> str:
+        return f"xr.GraphicsBindingEGLMNDX(get_proc_address={repr(self.get_proc_address)}, display={repr(self.display)}, config={repr(self.config)}, context={repr(self.context)}, next={repr(self.next)}, type={repr(self.type)})"
+
+    def __str__(self) -> str:
+        return f"xr.GraphicsBindingEGLMNDX(get_proc_address={self.get_proc_address}, display={self.display}, config={self.config}, context={self.context}, next={self.next}, type={self.type})"
+
+    _fields_ = [
+        ("type", StructureType.ctype()),
+        ("next", c_void_p),
+        ("get_proc_address", PFN_xrEglGetProcAddressMNDX),
+        ("display", c_void_p),
+        ("config", c_void_p),
+        ("context", c_void_p),
+    ]
+
 
 class SwapchainImageFoveationVulkanFB(Structure):
     def __init__(
@@ -675,9 +646,8 @@ __all__ = [
     "FB_foveation_vulkan_SPEC_VERSION",
     "FB_swapchain_update_state_vulkan",
     "FB_swapchain_update_state_vulkan_SPEC_VERSION",
+    "GraphicsBindingEGLMNDX",
     "GraphicsBindingOpenGLWaylandKHR",
-    "GraphicsBindingOpenGLXcbKHR",
-    "GraphicsBindingOpenGLXlibKHR",
     "GraphicsBindingVulkan2KHR",
     "GraphicsBindingVulkanKHR",
     "GraphicsRequirementsOpenGLKHR",
@@ -701,10 +671,14 @@ __all__ = [
     "META_VULKAN_SWAPCHAIN_CREATE_INFO_EXTENSION_NAME",
     "META_vulkan_swapchain_create_info",
     "META_vulkan_swapchain_create_info_SPEC_VERSION",
+    "MNDX_EGL_ENABLE_EXTENSION_NAME",
+    "MNDX_egl_enable",
+    "MNDX_egl_enable_SPEC_VERSION",
     "PFN_xrConvertTimeToTimespecTimeKHR",
     "PFN_xrConvertTimespecTimeToTimeKHR",
     "PFN_xrCreateVulkanDeviceKHR",
     "PFN_xrCreateVulkanInstanceKHR",
+    "PFN_xrEglGetProcAddressMNDX",
     "PFN_xrGetOpenGLGraphicsRequirementsKHR",
     "PFN_xrGetVulkanDeviceExtensionsKHR",
     "PFN_xrGetVulkanGraphicsDevice2KHR",

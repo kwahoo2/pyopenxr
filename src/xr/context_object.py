@@ -27,6 +27,12 @@ class ContextObject(object):
             environment_blend_mode=EnvironmentBlendMode.OPAQUE,
             form_factor=FormFactor.HEAD_MOUNTED_DISPLAY,
     ):
+        # Ensure xr.MNDX_EGL_ENABLE_EXTENSION_NAME is included
+        extensions = [ext.decode('utf-8') for ext in instance_create_info.enabled_extension_names]
+        if xr.KHR_OPENGL_ENABLE_EXTENSION_NAME in extensions:
+            if xr.MNDX_EGL_ENABLE_EXTENSION_NAME not in extensions:
+                extensions.append(xr.MNDX_EGL_ENABLE_EXTENSION_NAME)
+                instance_create_info.enabled_extension_names = extensions
         self._instance_create_info = instance_create_info
         self.instance = None
         self._session_create_info = session_create_info

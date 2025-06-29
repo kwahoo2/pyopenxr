@@ -10,27 +10,28 @@ def main():
         "-DXR_USE_GRAPHICS_API_OPENGL",
         "-DXR_USE_GRAPHICS_API_VULKAN",
         "-DXR_USE_PLATFORM_WAYLAND",
-        "-DXR_USE_PLATFORM_XCB",
-        "-DXR_USE_PLATFORM_XLIB",
+        "-DXR_USE_PLATFORM_EGL",
         "-DXR_USE_TIMESPEC",
     ]
     cg = xrg.CodeGenerator(
         header=xrg.Header.PLATFORM,
         compiler_args=compiler_args,
         header_preamble=inspect.cleandoc("""
-            #include <GL/gl.h>
-            #include <GL/glx.h>
+            #include <EGL/egl.h>
+            #include <EGL/eglext.h>
+            #include <EGL/eglplatform.h
         """),
     )
 
     cg.ctypes_names.add("c_long")
     cg.ctypes_names.add("c_longlong")
+    cg.ctypes_names.add("cast")
     cg.print_header()
     print("")
     print(inspect.cleandoc("""
         import ctypes
         from typing import Optional
-        from OpenGL import GLX
+        from OpenGL import EGL
 
         from ..array_field import *
         from ..enums import *
